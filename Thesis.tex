@@ -1,0 +1,102 @@
+%% ----------------------------------------------------------------
+%% Thesis.tex -- MAIN FILE
+%% ---------------------------------------------------------------- 
+
+% Set up the document
+\documentclass[a4paper, 12pt, twoside, openright]{Thesis} % use this for printing - or only use 'book' in document class
+
+\graphicspath{{Figures/}}  % Location of the graphics files (set up for graphics to be in PDF format)
+
+% Include any extra LaTeX packages required
+\usepackage[square, numbers, comma, sort&compress]{natbib}  % Use the "Natbib" style for the references in the Bibliography
+\usepackage{verbatim}  % Needed for the "comment" environment to make LaTeX comments
+\usepackage{vector}  % Allows "\bvec{}" and "\buvec{}" for "blackboard" style bold vectors in maths
+\usepackage{hyperref}
+\hypersetup{urlcolor=blue, colorlinks=true}
+
+\usepackage{csquotes}
+\usepackage{multirow}
+
+
+\usepackage{textcomp} % https://tex.stackexchange.com/a/58250/150467
+\usepackage[table]{xcolor}
+%\definecolor{cyan}{RGB}{0,255,255}
+\definecolor{violet}{RGB}{143,0,255}
+\definecolor{lightgray}{RGB}{235,235,235}
+\definecolor{cream}{RGB}{247,245,213}
+\definecolor{darkbrown}{RGB}{133,101,15}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{somedarkcolor}{RGB}{200,0,100}
+\usepackage{enumerate}
+
+\newcommand{\fanew}[1]{\textcolor{somedarkcolor}{#1}}
+
+
+
+\newcommand{\highlight}[1]{{\setlength\fboxsep{1pt}\colorbox{cream}{#1}}} % https://tex.stackexchange.com/a/88979/150467
+
+\usepackage{mdframed} % https://tex.stackexchange.com/a/36528/150467
+\mdfdefinestyle{MyFrame}{%
+	linecolor=black,
+%	outerlinewidth=2pt,
+%	roundcorner=20pt,
+	innertopmargin=\baselineskip,
+	innerbottommargin=\baselineskip,
+%	innerrightmargin=20pt,
+%	innerleftmargin=20pt,
+%	backgroundcolor=gray!50!white
+}
+
+% to avoid underlined text going out of page margins use \ul of the soul package
+\usepackage{soul} % https://tex.stackexchange.com/a/9552/150467
+
+
+\usepackage{emptypage} % to remove headers on empty pages inserted between chapters to start new chapter on odd page/right side
+\usepackage{float} % so tables don't appear where they like, but order in they appear in code
+\usepackage{tabularx} % so tables don't become too wide and exceed margin
+\usepackage{footnote}
+\usepackage{threeparttable}
+
+\usepackage{subfig}
+
+\newcommand{\qq}{\symbol{34}} % 34 is the decimal ascii code for "
+
+\usepackage{listings, lstautogobble} % https://tex.stackexchange.com/a/162360/150467
+\lstset{
+	basicstyle=\ttfamily,
+	language = C++,
+	commentstyle=\color{pgreen},
+	columns=flexible,
+	breaklines=true,
+	frame=single,
+	autogobble=true,
+	showspaces=true,
+}
+\usepackage{lstlinebgrd} % https://tex.stackexchange.com/a/331843/150467
+
+\usepackage{siunitx} % https://tex.stackexchange.com/a/6105/150467
+
+%% ----------------------------------------------------------------
+\begin{document}
+
+\mainmatter	  % Begin normal, numeric (1,2,3...) page numbering
+\pagestyle{fancy}  % Return the page headers back to the "fancy" style
+
+\fancyhf{}
+\fancyhead[lo]{\slshape\nouppercase{\rightmark}}
+\fancyhead[re]{\slshape\nouppercase{\leftmark}}
+%\fancyhead[ro,le]{\thepage}
+\cfoot{\thepage}
+
+\input{Chapters/Chapter3} % Data and Methods
+
+%% ----------------------------------------------------------------
+\label{Bibliography}
+\lhead{\emph{Bibliography}}  % Change the left side page header to "Bibliography"
+\addtotoc{\bibname}
+\bibliographystyle{plain}  % Use the "unsrtnat" BibTeX style for formatting the Bibliography - "plain" for alphabetical order
+\bibliography{Bibliography}  % The references (bibliography) information are stored in the file named "Bibliography.bib"
+
+
+\end{document}  % The End
+%% ----------------------------------------------------------------
