@@ -1,22 +1,4 @@
 \chapter{Data and Methods} \label{chap:data}
-
-\begin{figure}
-
-\centering
-\includegraphics[width=.5\textwidth]{reach}
-\caption{Size of targetable population (reach estimate) with the targeting options selected in Figure \ref{fig:ad_interface} i.e. women living in the United States, between the ages of 13 and 35, who are interesting in engineering.}
-\label{fig:reach}
-
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\textwidth]{ad_interface}
-\caption{Screenshot of Facebook's Ads Manager interface showing some of the major functionalities available. Geographical location, age and gender have been specified. An elaborate list of targeting options are available through the cascading drop-down menus under ``Detailed Targeting". Here, the category ``Engineering" has been selected.}
-\label{fig:ad_interface}
-
-\end{figure}
-
 In our work, we draw from Facebook advertising data to produce estimates of the number of users with particular demographics and interests. In this document, we broadly explain the structure of Facebook's advertisement ecosystem, the data we gather from the system, and the techniques we use to analyze it.
 
 % In this section, we broadly explain the structure of Facebook's advertisement ecosystem, the data we gather from the system, and the techniques we use to analyze it.
@@ -34,15 +16,32 @@ Facebook provides multiple tools to target advertisements on the social network:
 
 In our work we utilize the Marketing API to specify combinations of Core Audience features (e.g., demographics, interests, and geographic locations) and obtain reach estimates for these combinations. That is, we obtain estimates of how many users with a given set of demographics, in a given location, Facebook has assigned a particular interest.
 
+\begin{figure}
+\centering
+\includegraphics[width=.8\textwidth]{ad_interface}
+\caption{Screenshot of Facebook's Ads Manager interface showing some of the major functionalities available. Geographical location, age and gender have been specified. An elaborate list of targeting options are available through the cascading drop-down menus under ``Detailed Targeting". Here, the category ``Engineering" has been selected.}
+\label{fig:ad_interface}
+
+\end{figure}
+
+\begin{figure}
+
+\centering
+\includegraphics[width=.5\textwidth]{reach}
+\caption{Size of targetable population (reach estimate) with the targeting options selected in Figure \ref{fig:ad_interface} i.e. women living in the United States, between the ages of 13 and 35, who are interesting in engineering.}
+\label{fig:reach}
+
+\end{figure}
+
 \subsection{Available Variables} \label{subsec:targeting_options}
 
 Figure \ref{fig:ad_interface} shows the structure of Facebook's \textit{Ads Manager} page, where marketers can construct core audiences for advertisement campaigns. We see that the interface provides the option to target by location, age, gender, language and a wide array of options under the ``Detailed Targeting" section.
 
 \textbf{Location.} For location based targeting, Facebook provides the option to target countries, regions comprising multiple countries (e.g. Asia or the European Economic Area), regions within countries such as provinces or states, cities, ZIP codes, as well as congressional districts in the United States. It also allows radius targeting by dropping a pin at a particular address and specifying a target radius as small as 1 kilometer around it. For all geographic options, advertisers are able to target people who either live in the area, have recently traveled there, are currently traveling to the area, or all of the above.
 
-\textbf{Demographics.} You can choose to advertise to people aged 13 - 100 years and to people who are Male, Female, or Other (the advertising interface groups non-binary genders into a single category). Age and gender are both directly self-reported variables. 
+\textbf{Demographics.} You can choose to advertise to people aged 13 - ``60+'' years and to people who are Male, Female, or Other (the advertising interface groups non-binary genders into a single category). Age and gender are both directly self-reported variables. 
 
-Under detailed targeting, you can also select a number of other demographics including education level, employment, ethnic affinity, and expat status. Education is self reported, but all other demographic variables are inferred. Note that income data is no longer available, as this data was provided by third parties and Facebook has discontinued use of that data.
+Under detailed targeting, you can also select a number of other demographics including education level, field of employment, ethnic affinity, and expat status. Education is self reported, but all other demographic variables are inferred. Note that income data is no longer available, as this data was provided by third parties and Facebook has discontinued use of that data.
 
 \textbf{Interests} Under detailed targeting you can also specify various different types of interests\footnote{Note that while Facebook has groupings under detailed targeting called "Behaviors" and "Interests" these categories may at time contain demographics (e.g., ethnic affinity, expat status), or interests (e.g., in education) may be placed in the ``Behaviors'' category, and vise versa. Thus, we manually evaluate all of the features, and examine advertisements that have been targeted using them, to better understand the true representation of a particular feature.}, which are grouped by themes such as ``Fitness and wellness", ``Hobbies and activities", ``Business and Industry'' and etc. The ``Business and Industry'' category includes, for example, ``Higher Education'' which we find appears to proxy for an interest in education.
 
@@ -50,7 +49,9 @@ Under detailed targeting, you can also select a number of other demographics inc
 
 \textbf{Open Text} In addition to the features characterized under these three categories, Facebook also automatically indexes other interests across the platform which advertisers can search by inputting free text. Many of these features have been observed to be directly related to pages on the social network and are explained in the Ads Manager as targeting ``people who have expressed an interest in" or ``like pages related to" the particular feature.
 
-It is also important to note that the list of these targetable features is not static. It is subject to moderation if the users report a feature in the list as inappropriate. As an example, this public moderation practice has previously led to Facebook renaming the ethnic affinity feature \cite{propublica_fb_ethnic_affinity_again}, and removing problematic anti-semitic ad categories that were automatically indexed by the ad system \cite{propublica_jew_hater_study}. These regular changes to the features warrant caution while collecting data from the platform.
+It is also important to note that the list of these targetable features is not static. It is subject to moderation if the users report a feature in the list as inappropriate. As an example, this public moderation practice has previously led to Facebook renaming the ethnic affinity feature%\cite{propublica_fb_ethnic_affinity_again}
+, and removing problematic anti-semitic ad categories that were automatically indexed by the ad system% \cite{propublica_jew_hater_study}
+. These regular changes to the features warrant caution while collecting data from the platform.
 
 \section{Dataset} \label{subsec:data_collected}
 We create a dataset of reach estimates corresponding to the number of people with a particular set of demographics who Facebook reports are interested in a particular thing or behave in a particular way. We focus exclusively on the United States as it has high Facebook penetration and is the only region where Facebook infers user ethnicity.
@@ -96,7 +97,7 @@ As of the time of this writing, the Ads Manager reports that 240 million people 
 
 % To evaluate the quality of demographic estimates, we compare Facebook's estimates against ground truth data obtained from the developer API provided by ACS\footnote{\url{https://www.census.gov/data/developers/data-sets.html}}.
 
-To investigate the quality of demographic estimates in our data, we compare the Facebook demographic estimates to ground truth data from the American Community Survey's 2016 5-year estimates. Table \ref{tab:comparison} shows the comparison of gender, ethnicity, education and age estimates in the Facebook dataset to the ACS figures. While $\chi^2$ proportion tests show significant differences in the estimates for all variables, when observing the effect size of these differences we find that meaningful differences (Cohen's $h$>0.2 (small)) are observed for only one age group and for educational attainment. Given the size of the educational attainment differences (medium) we exclude educational attainment from our analysis. 
+To investigate the quality of demographic estimates in our data, we compare the Facebook demographic estimates to ground truth data from the American Community Survey's 2016 5-year estimates. Table \ref{tab:comparison} shows the comparison of gender, ethnicity, education and age estimates in the Facebook dataset to the ACS figures. While $\chi^2$ proportion tests show significant differences in the estimates for all variables, when observing the effect size of these differences we find that meaningful differences (Cohen's $h\le0.2$ (small)) are observed for only one age group and for educational attainment. Given the size of the educational attainment differences (Cohen's $h\ge0.4$ medium) we exclude educational attainment from our analysis. 
 
 % ====== representation table =======
 \begin{table}
