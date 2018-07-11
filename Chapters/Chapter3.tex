@@ -1,17 +1,23 @@
 \chapter{Data and Methods} \label{chap:data}
 
-In this section, we broadly explain the structure of Facebook's advertisement ecosystem, the data we gather from the system, and the techniques we use to analyze it.
+In our work, we draw from Facebook advertising data to produce estimates of the number of users with particular demographics and interests. In this document, we broadly explain the structure of Facebook's advertisement ecosystem, the data we gather from the system, and the techniques we use to analyze it.
+
+% In this section, we broadly explain the structure of Facebook's advertisement ecosystem, the data we gather from the system, and the techniques we use to analyze it.
 
 \section{Facebook's Advertisement Ecosystem} \label{sec:fb_ad_eco}
 
 % LATER: for thesis draft, explain the scale of how many people are affected by these ads and how important all of it is to Facebook.
 
-As the world's largest social network\footnote{\url{https://www.weforum.org/agenda/2017/03/most-popular-social-networks-mapped/}}, Facebook's targeted advertising system allows marketers and businesses to target ads to its users by their demographic attributes, location, interests and internet behaviors. Prior to launching an ad, Facebook is also able to report how many people would fit the criteria and view the campaign -- which it refers to as the \textit{reach estimate}.
+As the world's largest social network\footnote{\url{https://www.weforum.org/agenda/2017/03/most-popular-social-networks-mapped/}}, Facebook's targeted advertising system allows marketers and businesses to target ads to its users by their demographic attributes, location, as well as interests and internet behaviors that it has inferred about them. Prior to launching an ad, Facebook is also able to report how many people would fit the specified criteria and view the campaign -- which it refers to as the \textit{reach estimate}.
 
-The ability of the platform to a) simultaneously target users by both their demographic and behavioral attributes; and b) to provide reach estimates prior to actually launching the ads, makes it a useful tool for understanding the characteristics of a population. It also makes it a powerful tool for understanding what Facebook \textit{thinks} the characteristics of a population are.
+The ability of the platform to a) simultaneously target users by both their demographic and behavioral attributes; and b) to provide reach estimates prior to actually launching the ads, makes it a useful tool for understanding the characteristics of a population -- or at least what Facebook \textit{thinks} they are.
 
-We are able to use the system for very specific queries such as ``the number of women between the ages of 25 and 29 interested in online shopping" or ``the number of African-American men managing small business pages on Facebook", and then compare the given reach estimates across demographic groups -- all without ever launching an ad.
+Using the social network's ad system, we can issue very specific queries such as ``the number of women between the ages of 25 and 29 interested in online shopping" or ``the number of African-American men managing small business pages on Facebook", and then compare the given reach estimates across demographic groups -- all without ever launching an ad.
 
+Facebook provides multiple tools to target audiences on the social network, such as uploading personally identifiable information (PII) or finding people with similar interests to a prior audience; but for our study, we primarily focus on a feature the platform refers to as \textit{Core Audiences}\footnote{\url{https://www.facebook.com/business/products/ads/ad-targeting}}. Here, Facebook allows marketers to explicitly choose the features or characteristics of the population they want to target. These features range from demographic variables such as gender and relationship status to interests in things such as anime movies or hip hop music.
+
+\if(
+% ==== removed from Ezster's draft ====
 On a more general level, Facebook categorizes its ad targeting toolkit into three major categories\footnote{\url{https://www.facebook.com/business/products/ads/ad-targeting}}:
 
 \begin{enumerate}
@@ -23,6 +29,7 @@ On a more general level, Facebook categorizes its ad targeting toolkit into thre
 \end{enumerate}
 
 We primarily choose to focus on core audiences, as our goal is to identify biases present in the features provided to advertisers.
+)\fi
 
 \subsection{Available Targeting Options} \label{subsec:targeting_options}
 
@@ -35,16 +42,21 @@ We primarily choose to focus on core audiences, as our goal is to identify biase
 
 \end{figure}
 
-Figure \ref{fig:ad_interface} shows the structure of Facebook's \textit{Ads Manager} page, where marketers can construct audiences for advertisement campaigns. We see that the interface provides the option to target by location, age, gender, language and a wide array of options under the ``Detailed Targeting" section.
+Figure \ref{fig:ad_interface} shows the structure of Facebook's \textit{Ads Manager} page, where marketers can construct core audiences for advertisement campaigns. We see that the interface provides the option to target by location, age, gender, language and a wide array of options under the ``Detailed Targeting" section.
 
-For location based targeting, Facebook provides the option to target countries, regions comprising multiple countries (e.g. Asia or the European Economic Area), regions within countries such as provinces or states, cities, ZIP codes, as well as congressional districts in the United States. It also allows radius targeting by dropping a pin at a particular address and specifying a target radius as small as 1 kilometer around it. For all these options, advertisers are able to target people who either live in the area, have recently traveled there, are currently traveling, or all of the above.
+For location based targeting, Facebook provides the option to target countries, regions comprising multiple countries (e.g. Asia or the European Economic Area), regions within countries such as provinces or states, cities, ZIP codes, as well as congressional districts in the United States. It also allows radius targeting by dropping a pin at a particular address and specifying a target radius as small as 1 kilometer around it. For all geographic options, advertisers are able to target people who either live in the area, have recently traveled there, are currently traveling to the area, or all of the above.
 
 In selecting age, the interface permits arbitrary age ranges with the minimum and maximum age options. Since the social network's minimum allowed joining age is 13, the platform doesn't allow targeting pre-teens.
 
-Under detailed targeting, the platform classifies interests into three broad categories: demographics, interests and behaviors. Targeting features such as education level, relationship status and employment are grouped under demographics. The interests category contains features related to what people might be interested in, such as professions, entertainment choices, or health interests, among others. Behaviors mostly contains features where Facebook collaborates with external data-brokers to identify user behaviors on the internet. It also contains categories such as users' device usage, shopping behaviors, or their expat status. Facebook plans to permanently discontinue collaborating with external data brokers in August 2018 but other categories under behaviors will stay.
+Under detailed targeting, the platform classifies interests into three broad categories: demographics, interests and behaviors. Targeting features such as education level, relationship status and employment are mostly grouped under demographics, while interests and behaviors often contain lifestyle choices and internet use behaviors respectively. Even within each category, many targeting features are grouped together by themes such as ``Fitness and wellness", ``Hobbies and activities" etc. However, the demarcation isn't very strict and it is sometimes unclear why a particular feature was grouped under a category. For example, expat and ethnicity targeting attributes are put under behaviors even though they describe demographic traits. Similarly, we find the ``Higher education" attribute to approximate an interest in education very well, but its classification under the ``Business and industry" category could be misleading.
 
-It is also important to note that the list of these targetable features is not static by any means. It is subject to moderation if the users report a feature in the list as inappropriate. As an example, this public moderation practice has previously led to Facebook renaming the ethnic affinity feature \cite{propublica_fb_ethnic_affinity_again} and removing problematic anti-semitic ad categories that were automatically indexed by the ad system \cite{propublica_jew_hater_study}.
+We thus find it more useful to peruse the targeting attributes and identify the ones that are important for a particular study, instead of being guided by how the interface groups them.
 
+\if(
+The interests category contains features related to what people might be interested in, such as professions, entertainment choices, or health interests, among others. Behaviors mostly contains features where Facebook collaborates with external data-brokers to identify user behaviors on the internet. It also contains categories such as users' device usage, shopping behaviors, or their expat status. Facebook plans to permanently discontinue collaborating with external data brokers in August 2018 but other categories under behaviors will stay.
+)\fi
+
+It is also important to note that the list of these targetable features is not static. It is subject to moderation if the users report a feature in the list as inappropriate. As an example, this public moderation practice has previously led to Facebook renaming the ethnic affinity feature \cite{propublica_fb_ethnic_affinity_again}, and removing problematic anti-semitic ad categories that were automatically indexed by the ad system \cite{propublica_jew_hater_study}. These regular changes to the features warrant caution while collecting data from the platform.
 
 In addition to the features characterized under these three categories, Facebook also automatically indexes other interests across the platform which advertisers can search by inputting free text. Many of these features have been observed to be directly related to pages on the social network and are explained in the Ads Manager as targeting ``people who have expressed an interest in" or ``like pages related to" the particular feature.
 % To briefly characterize the kinds of features that are grouped together, Table \ref{tab:top_10_attrs} shows the most popular interests and behaviors for Facebook users in the US.
@@ -65,7 +77,7 @@ $$(\text{electrical engineering} \lor \text{software engineering}) \land \text{m
 % people who are interested in electrical engineering OR software engineering AND mathematics and NOT in design, is a perfectly valid combination.
 is perfectly possible and permitted with the current targeting mechanism.
 
-Throughout the process of tweaking the audience by selecting different targeting options, Facebook reports the number of people accessible with the current selection. This is shown under \textit{Potential Reach} in the Ads Manager and is shown in Figure \ref{fig:reach}. These reach estimate form the foundation of our study and are the primary measurements we take from the online ads network.
+Throughout the process of tweaking the audience by selecting different targeting options, Facebook reports the number of people accessible with the current selection. This is shown under \textit{Potential Reach} in the Ads Manager and is shown in Figure \ref{fig:reach}. These reach estimates form the foundation of our study and are the primary measurements we take from the online ads network.
 
 \begin{figure}
 
@@ -77,23 +89,29 @@ Throughout the process of tweaking the audience by selecting different targeting
 \end{figure}
 
 \subsection{The Marketing API} \label{subsec:marketing_api}
-To encourage developers to programmatically create and manage ad campaigns, Facebook has provided public Application Programming Interfaces (APIs). By making a developer account on the platform and setting up an application with appropriate permissions, we are also able to leverage these APIs for research purposes. In particular, we utilize the Marketing API to specify combinations of targeting features, demographic attributes, and geographical locations -- in return for the reach estimates for these combinations.
+To encourage developers to programmatically create and manage ad campaigns, Facebook has provided public Application Programming Interfaces (APIs).
+
+By making a developer account on the platform and setting up an application with appropriate permissions, we are also able to leverage these APIs for research purposes. In particular, we utilize the Marketing API to specify combinations of targeting features, demographic attributes, and geographical locations -- in return for the reach estimates for these combinations.
 
 We also take advantage of the Targeting Search API -- the same API that is used to search Facebook's database of features when an advertiser inputs free text. By sending an empty string query, we are able to retrieve all features grouped under interests and behaviors from the platform.
 
 Facebook also provides convenient Software Developer Kits (SDKs) for different programming languages for abstractions in access to the APIs. We make use of the Facebook Business SDK for Python\footnote{\url{https://github.com/facebook/facebook-python-business-sdk}} to make queries to the Marketing and Targeting Search APIs.
 
 \subsection{Data Collected} \label{subsec:data_collected}
-We collect both demographic and advertisement related estimates from the Marketing API. Demographically, we choose to focus on gender and ethnicity; while for the advertisement estimates, we query the API for the interest each demographic group shows in the ad-targeting features. We limit our estimates to the United States as it is a high internet penetration country, and also the only region where Facebook explicitly infers ethnicity -- or ``Multicultural Affinity" as the Ads Manager calls it.
+We collect both demographic and advertisement related estimates from the Marketing API. 
 
-\textbf{Demographics:} For gender, we ask Facebook for the number of men and women in the U.S. For ethnicity, we query for the number of White, Asian, Hispanic and African Americans in the country. Since Facebook doesn't have an explicit White ethnicity attribute, we obtain this estimate by excluding all other ethnic groups recorded by the platform.
+Demographically, we choose to focus on age, gender, ethnicity and education; we discontinue using education for our later analyses because of poor quality estimates from the ad platform (more detail in Section \ref{sec:fb_quality}).
 
-\textbf{Targeting Features:} Once we have the list of targeting attributes from the Targeting Search API -- 323 interests and 264 behaviors, we are able to iterate over them and ask the Marketing API for a) the number of people interested in the attribute; and b) the number of people from each demographic group interested in the attribute. The latter estimate is made with a logical AND (the narrow option) in the API.
+For the advertisement estimates, we query the API for the interest each demographic group shows in the ad-targeting features. We limit our estimates to the United States as it is a high internet penetration country, and also the only region where Facebook infers user ethnicity -- or ``Multicultural Affinity" as the Ads Manager calls it.
+
+\textbf{Demographics:} For gender, we ask Facebook for the number of men and women in the U.S. For ethnicity, we query for the number of White, Asian, Hispanic and African Americans in the country. Since Facebook doesn't have an explicit White ethnicity attribute, we obtain this estimate by excluding all other ethnic groups recorded by the platform. We query for age by breaking down the ages into five year bins starting from 15 until ``60+", which is the maximum targetable age on the platform.
+
+\textbf{Targeting Features:} Once we have the list of targeting attributes from the Targeting Search API -- 323 interests and 264 behaviors, we are able to iterate over them and ask the Marketing API for a) the number of people interested in the attribute; and b) the number of people from each demographic group interested in the attribute. The latter estimate is made with a logical AND operation i.e. with the ``narrow" option in the API.
 
 \section{Quality of Facebook's Estimates} \label{sec:fb_quality}
-Since our study focuses on Facebook's ad-targeting features and their associations along different demographic dimensions, it is imperative that Facebook's estimates for these demographic variables are reliable. Gender and age are self-reported on the social network, while ethnicity (available only in the United States) is an inferred feature. Errors might arise either due to faulty self-reporting or due to problems in Facebook's inference.
+Since our study focuses on Facebook's ad-targeting features and their associations along different demographic dimensions, it is imperative that Facebook's estimates for these demographic variables are reliable. Gender,  age and education are self-reported on the social network, while ethnicity (available only in the United States) is an inferred feature. Errors might arise either due to faulty self-reporting or due to problems in Facebook's inference mechanism.
 
-To investigate the quality of demographic estimates from Facebook's API, we compare the gender and ethnicity estimates to ground truth data from the American Community Survey's 2016 1-year estimates. The American Community Survey (ACS) is a survey administered by the United States Census Bureau in addition to the decennial census to annually update housing and demographic statistics \cite{acs2017info}. We use the developer API provided by ACS to query for ground truth data.
+To investigate the quality of demographic estimates from Facebook's API, we compare the demographic estimates to ground truth data from the American Community Survey's 2016 5-year estimates. The American Community Survey (ACS) is a survey administered by the United States Census Bureau in addition to the decennial census to annually update housing and demographic statistics \cite{acs2017info}. We use the developer API\footnote{\url{https://www.census.gov/data/developers/data-sets.html}} provided by ACS to query for ground truth data.
 
 As of the time of this writing, the Ads Manager reports that 240 million people who live in the United States are targetable with Facebook ads. To understand the scale of this penetration, we stratify this estimate by each state and observe what fraction of the population in each state is targetable. Figure \ref{fig:rep_map} shows the fraction of population in each state that is targetable with Facebook's targeted ads. We find that the lowest penetration is in New Jersey with 58.13\% of the population being targetable. The average penetration over all states is 69.45\%. This helps illustrate the scale of the platform in a country like the U.S. where a large fraction of the population is reachable and can be studied with advertisement data.
 
@@ -106,6 +124,7 @@ As of the time of this writing, the Ads Manager reports that 240 million people 
 \end{figure}
 % ====
 
+\if(
 % === correlation figures ===
 % === for smaller figure widths, this would put images side by side ===
 \begin{figure}
@@ -118,11 +137,22 @@ As of the time of this writing, the Ads Manager reports that 240 million people 
     \label{fig:corrs}
 \end{figure}
 % ====
+)\fi
 
-To ensure the quality of gender and ethnicity estimates, we compare Facebook's estimates against ground truth, state-level data obtained from the developer API provided by ACS\footnote{\url{https://www.census.gov/data/developers/data-sets.html}}. Querying over different states serves the dual purpose of a) having multiple measurements of the same variables, and b) establishing that our approaches are extensible to smaller geographies. Figure \ref{fig:corrs} shows how the state-level estimates for gender and ethnicity correlate across Facebook and ACS. It can be seen that Facebook is able to estimate both variables extremely well, and most variance can be explained with a simple linear model. Table \ref{tab:corrs} shows the comparison for all possible values of gender and ethnicity in Facebook's API.
+% To evaluate the quality of demographic estimates, we compare Facebook's estimates against ground truth data obtained from the developer API provided by ACS\footnote{\url{https://www.census.gov/data/developers/data-sets.html}}.
 
-These results demonstrate that even though not everyone is on Facebook or targetable with its online ads, there are no significant skews in the predictions that the ad platform makes for demographic variables. This gives us confidence that analyses built on top of these estimates are reliable and not spurious due to poor quality estimates.
+Further, Table \ref{tab:comparison} shows the comparison of gender, ethnicity, education and age estimates across both datasets. Because of the large sample sizes, it is important to use $\chi^2$ proportion tests while accounting for the effect size. We use Cohen's $h$ to quantify the effect size for the difference of proportions.
 
+\if(
+Querying over different states serves the dual purpose of a) having multiple measurements of the same variables, and b) establishing that our approaches are extensible to smaller geographies. Figure \ref{fig:corrs} shows how the state-level estimates for gender and ethnicity correlate across Facebook and ACS. It can be seen that Facebook is able to estimate both variables extremely well, and most variance can be explained with a simple linear model. Table \ref{tab:comparison} shows the comparison for all possible values of gender and ethnicity in Facebook's API.
+)\fi
+
+These results demonstrate that even though not everyone is on Facebook or targetable with its online ads, there are no significant skews in the predictions that the ad platform makes for gender, ethnicity and age. Of the demographic variables we consider, we find the estimates for education to be least reliable, where the platform has a significant propensity to overestimate the number of college graduates.
+
+Overall, this practice gives us confidence that analyses built on top of these estimates are reliable and not spurious due to poor inferences on the social network.
+
+% ====== old correlations table =======
+\if(
 \begin{table}
 \centering
 \begin{tabular}{c | c | c } 
@@ -140,42 +170,93 @@ These results demonstrate that even though not everyone is on Facebook or target
 \caption{Correlations of Facebook's state-level gender and ethnicity estimates with American Community Survey's (ACS) ground truth data. $p < 10^{-20}$ for all rows.}
 \label{tab:corrs}
 \end{table}
+)\fi
+% =============
 
+% ====== representation table =======
+\begin{table}
+\centering
+\begin{tabular}{c | c | c | c | c} 
+\toprule
+\textbf{Variable} & \textbf{Value} & \multicolumn{3}{c}{\textbf{\%}}\\
+& & \textbf{Facebook} & \textbf{ACS} & \textbf{$\Delta$}\\
+ \hline
+\textbf{Gender} & Male & 45.83 & 49.21 & -3.38\\
+& Female & 54.16 & 50.78 & +3.38\\
+ \midrule
+ \textbf{Ethnicity} & White & 64.58 & 61.95 & +2.63\\
+ & Black & 14.16 & 12.63 & +1.53\\
+ & Asian & 3.08 & 5.21 & -2.13\\
+ & Hispanic & 13.75 & 17.32 & -3.57\\
+ \midrule
+ \textbf{Completed education} & Less than high school & 3.16 & 10.09 & -6.93*\\
+ & High school & 17.08 & 21.41 & -4.33\\
+ & College & 31.25 & 13.61 & +17.64**\\
+ & Graduate school & 4.11 & 7.71 & -3.6\\
+ \midrule
+ \textbf{Age} & 15-19 & 5.83 & 6.69 & -0.86\\
+ & 20-24 & 12.91 & 7.09 & +5.81\\
+ & 25-29 & 13.75 & 6.89 & +6.85*\\
+ & 30-34 & 10.83 & 6.69 & +4.13\\
+ & 35-39 & 10.41 & 6.29 & +4.11\\
+ & 40-44 & 8.33 & 6.39 & +1.93\\
+ & 45-49 & 8.33 & 6.59 & +1.73\\
+ & 50-54 & 7.08 & 6.99 & +0.08\\
+ & 55-59 & 6.25 & 6.69 & -0.44\\
+ & 60+ & 14.16 & 20.39 & -6.23\\ 
+ \bottomrule
+\end{tabular}
+\caption{Percentage demographic makeup of Facebook's population in the United States, compared with ground truth data from the American Community Survey (ACS). The difference in Facebook is shown as $\Delta$. $\chi^2$ test of proportions yields $p < 0.001$ for all measurements, with small effect size (Cohen's $h < 0.2$) for unmarked differences. *$h = 0.2$; **$h = 0.4$.}
+\label{tab:comparison}
+\end{table}
+% =============
 
 \section{Methods for Analysis} \label{sec:methods}
 Once we have collected data from the marketing API and ensured that Facebook's demographic estimates corroborate with real-world data, we begin evaluating which targeting features have the highest affiliations with which subgroups of the population.
 
-% In this section, we operationalize the biases investigate our data for.
+To understand how strongly the ad platform associates a demographic with a particular targeting feature, we ask three fundamental questions:
 
-To quantify how likely it is for a particular demographic group to be inferred interested in a targeting feature, we define the notion of \textit{interest affinity}. Simply put, the interest affinity captures whether a group is more or less interested than the general population in a targetable feature according to Facebook. Since these inferences are done by Facebook and we only access data from a blackbox, we essentially capture whether the ad might have associated ad interests with demographic groups. More formally, we define the affinity for a demographic group $d$ towards a targetable feature $f$ as
+\begin{enumerate}
+\item How likely it for people from a demographic to be inferred interested in a targeting feature?
+\item Are members of the demographic more likely to be inferred than the general population?
+\item Are they more likely to be inferred than another particular demographic?
+\end{enumerate}
 
-\begin{equation}
-\text{affinity}_g(d, f) = \frac{n_g(d, f)}{n_g(d)} - \frac{n_g(f)}{N_g},
-\label{eq:aff}
-\end{equation}
-
-where $n_g(d)$ and $n_g(f)$ are the reach estimates (i.e. number of people targetable) by specifying demographic $d$ and feature $f$ alone. $n_g(d, f)$ refers to the intersection of populations targetable with $d$ and $f$. Because of the nature of the ad ecosystem, a geographical location of the audience must always be specified, which is what the $g$ in the subscript refers to. Consequently, $N_g$ is the total population in region $g$ according to Facebook. All these estimates are obtained with the data collection process described in Section \ref{subsec:data_collected}.
-
-A large positive value would indicate that members of demographic $d$ are considered much more likely by the ad platform to be interested in feature $f$, as compared to the general population in region $g$. Analogously, a large negative value would mean Facebook does not associate group $d$ with the feature $f$ and some other subgroup of the population in $g$ is more highly interested.
-
-For brevity, we shall hereon refer to the first term in Equation \ref{eq:aff} as the \textit{penetration} of feature $f$ within demographic $d$ i.e.
+To answer the first question, we look at what fraction of a group's population is interested in an attribute according to Facebook. We refer to this ratio as the \textit{penetration} of the attribute in the group. For a demographic $d$ and feature $f$ on the platform, we define penetration as
 
 \begin{equation}
-\text{penetration}_g(d, f) = \frac{n_g(d, f)}{n_g(d)}
+\text{penetration}_g(d, f) = \frac{n_g(d, f)}{n_g(d)},
 \label{eq:pen}
 \end{equation}
 
-It simply characterizes what fraction of a demographic $d$ is considered interested in feature $f$ by Facebook.
+where $n_g(d)$ is the reach estimate (i.e. number of people targetable) by specifying demographic $d$ alone on the platform. $n_g(d, f)$ refers to the intersection of populations targetable with demographic $d$ and feature $f$. Because of the nature of the ad ecosystem, a geographical location of the audience must always be specified, which is shown here as $g$.
 
-Naturally, for two groups $d_1$ and $d_2$ that have a large difference in their affinity (or alternatively, penetration) for a particular feature $f$, Facebook has a very different understanding of their interest in $f$. As a result, a higher fraction of the group with the larger affinity would end up seeing content related to $f$. We refer to the difference in affinity for two groups as their \textit{disparity} on targetable feature $f$
+Equation \ref{eq:pen} gives us a simple statistic for the association of each demographic in our dataset to the attributes on the platform. To answer the second question of whether a group is more or less likely to be inferred than the general population, we build on top of penetration and define the notion of \textit{affinity}. We define the affinity for a demographic group $d$ towards a targetable feature $f$ as
+
+\begin{equation}
+\text{affinity}_g(d, f) = \frac{n_g(d, f)}{n_g(d)} - \frac{n_g(f)}{N_g}.
+\label{eq:aff}
+\end{equation}
+
+Following similar notation, here $n_g(f)$ refers to the reach estimate for feature $f$ without specifying any demographic; $N_g$ denotes total population in region $g$ according to Facebook. All estimates involved in these computations are obtained with the data collection process described in Section \ref{subsec:data_collected}.
+
+A large positive affinity would indicate that members of demographic $d$ are considered much more likely by the ad platform to be interested in feature $f$, as compared to the general population in region $g$. Analogously, a large negative value would mean Facebook does not associate group $d$ with the feature $f$ and some other subgroup of the population in $g$ is more highly interested.
+
+\if(
+where $n_g(d)$ and $n_g(f)$ are the reach estimates (i.e. number of people targetable) by specifying demographic $d$ and feature $f$ alone. $n_g(d, f)$ refers to the intersection of populations targetable with $d$ and $f$. Because of the nature of the ad ecosystem, a geographical location of the audience must always be specified, which is what the $g$ in the subscript refers to. Consequently, $N_g$ is the total population in region $g$ according to Facebook. All these estimates are obtained with the data collection process described in Section \ref{subsec:data_collected}.
+)\fi
+
+For answering the third question of whether one demographic is more likely than another to be inferred for an attribute, we compare the affinity of the attribute for both groups. We refer to the difference in affinity (or alternatively, penetration) for two groups $d_1$ and $d_2$ as their \textit{disparity} on targeting feature $f$,
 
 \begin{align*}
 \text{disparity}_g(d_1, d_2, f) &= \text{penetration}_g(d_1, f) - \text{penetration}_g(d_2, f)\\
-&= \frac{n_g(d_1, f)}{n_g(d_1)} - \frac{n_g(d_2, f)}{n_g(d_2)} \addtocounter{equation}{1}\tag{\theequation}
+&= \frac{n_g(d_1, f)}{n_g(d_1)} - \frac{n_g(d_2, f)}{n_g(d_2)}. \addtocounter{equation}{1}\tag{\theequation}
 \label{eq:disparity}
 \end{align*}
 
-Having a notion of disparity between two demographics in terms of a targetable feature $f$ allows us to investigate what differences Facebook believes these groups have. It also allows us to be more rigorous by performing significance testing on the disparity. For a set of targeting features $F$ and a feature $f^* \in F$ with positive value of the disparity statistic $T = \text{disparity}_g(d_1, d_2, f^*)$, we are able to compute the p-value with a maximum likelihood estimate as
+Naturally, for two groups $d_1$ and $d_2$ that have large disparity for a feature $f$, Facebook has a very different understanding of their interest in $f$. As a result, a higher fraction of the group with the larger affinity would end up seeing content related to $f$. Moreover, targeted ads also present the opportunity to expand these differences. By disproportionately showing ads for attributes that might be relevant for both demographics, disparities might reinforce themselves over time. Therefore, having a notion of disparity between two demographics allows us to observe the differences Facebook believes these groups have.
+
+It also allows us to be more rigorous by performing statistical testing on the disparity and see whether the differences are statistically significant. For a set of targeting features $F$ and a feature $f^* \in F$ with positive value of the disparity statistic $T = \text{disparity}_g(d_1, d_2, f^*)$, we are able to compute the p-value with a maximum likelihood estimate as
 
 \begin{align*}
 p &= \Pr[\; \text{disparity}_g(d_1, d_2, f) \geq T \;]\\[.3em]
